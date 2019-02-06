@@ -133,6 +133,7 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
         switch1 = (Switch) findViewById(R.id.switch1);
 
 // Obtain the FirebaseAnalytics instance.
+        EditText1 = (EditText) findViewById(R.id.editText1);
 
         hasChanged = false;
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(MainActivity.this);
@@ -198,7 +199,7 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
 
    //     txtSizeText.setText(Integer.toString(prefs.getInt("txtSize", 100)));
         EditText1.setTextSize((float)prefs.getInt("txtSize", 100));
-        topOffText.setY((float)(prefs.getInt("topOff", 100)));
+        EditText1.setY((float)(prefs.getInt("topOff", 100)));
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
 
@@ -271,7 +272,6 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
         });
 */
 
-        EditText1 = (EditText) findViewById(R.id.editText1);
 
         final ImageButton fab = (ImageButton) findViewById(R.id.checkBtn);
         switch1.setVisibility(View.VISIBLE);
@@ -421,7 +421,12 @@ EditText1.setOnTouchListener(new View.OnTouchListener() {
         }
         return true;
     }
+    @Override
+    public void onBackPressed() {
 
+        EditText1.clearFocus();
+        super.onBackPressed();
+    }
     int getDistance(MotionEvent event) {
         int dx = (int) (event.getX(0) - event.getX(1));
         int dy = (int) (event.getY(0) - event.getY(1));
