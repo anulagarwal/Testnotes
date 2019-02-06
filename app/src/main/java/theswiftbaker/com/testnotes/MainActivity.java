@@ -82,7 +82,7 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
     EditText EditText1;
-    ImageButton resetButton;
+
     SeekBar txtSize, topOffset, leftOffset;
     TextView leftOffText, topOffText, txtSizeText;
     public boolean hasChanged;
@@ -268,7 +268,7 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
 
 
         EditText1 = (EditText) findViewById(R.id.editText1);
-        resetButton = (ImageButton) findViewById(R.id.resetBtn);
+
         ImageButton fab = (ImageButton) findViewById(R.id.checkBtn);
      //   mInterstitialAd.show();
         fab.setOnClickListener(new View.OnClickListener() {
@@ -306,17 +306,7 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
         });
 
 
-        resetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-
-                bundle.putString("ResetButton", "Reset Button");
-                mFirebaseAnalytics.logEvent("MainSettings", bundle);
-                clearText();
-
-            }
-        });
 
 
         EditText1.setText(Open("NoteText1.txt"));
@@ -340,7 +330,9 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(!isChecked){
-                    resetToWallpaper();
+                    bundle.putString("ResetButton", "Reset Button");
+                    mFirebaseAnalytics.logEvent("MainSettings", bundle);
+                    clearText();
 
                 }
             }
@@ -708,17 +700,18 @@ updateTemporaryBG();
         topOff = prefs.getInt("topOff", 0);
         switch (txtColor) {
             case "Red":
-                txtCol = Color.RED;
+                txtCol = Color.parseColor("#eb2f06");
+
                 break;
             case "Blue":
-                txtCol = Color.BLUE;
+                txtCol =Color.parseColor("#1e3799");
                 break;
             case "Green":
                 txtCol = Color.GREEN;
                 break;
 
             case "Yellow":
-                txtCol = Color.YELLOW;
+                txtCol = Color.parseColor("#ffdd59");
                 break;
 
             case "White":
@@ -726,23 +719,24 @@ updateTemporaryBG();
                 break;
 
             case "Black":
-                txtCol = Color.BLACK;
+                txtCol =  Color.parseColor("#1e272e");
                 break;
         }
 
         switch (bgColor) {
             case "Red":
-                bgCol = Color.RED;
+
+                bgCol = Color.parseColor("#eb2f06");
                 break;
             case "Blue":
-                bgCol = Color.BLUE;
+                bgCol =  Color.parseColor("#1e3799");
                 break;
             case "Green":
                 bgCol = Color.GREEN;
                 break;
 
             case "Yellow":
-                bgCol = Color.YELLOW;
+                bgCol= Color.parseColor("#ffdd59");
                 break;
 
             case "White":
@@ -750,7 +744,7 @@ updateTemporaryBG();
                 break;
 
             case "Black":
-                bgCol = Color.BLACK;
+                bgCol =  Color.parseColor("#1e272e");
                 break;
         }
 
