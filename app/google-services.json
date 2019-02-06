@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "122344327413",
+    "firebase_url": "https://notedtask.firebaseio.com",
+    "project_id": "notedtask",
+    "storage_bucket": "notedtask.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:122344327413:android:ea6fd39dbec23ac0",
+        "android_client_info": {
+          "package_name": "com.theswiftbaker.com.testnotes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "122344327413-27jfih1trkmkrb865pinb50b6ej727s8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcrG_lVznFZFnMvBoKZAjPpVapuNSyXbg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:122344327413:android:4b2177287b242cf4",
+        "android_client_info": {
+          "package_name": "theswiftbaker.com.testnotes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "122344327413-27jfih1trkmkrb865pinb50b6ej727s8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcrG_lVznFZFnMvBoKZAjPpVapuNSyXbg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

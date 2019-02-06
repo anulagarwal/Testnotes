@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="General">
+        <ListPreference
+
+            android:dialogTitle="Font Color"
+
+            android:entries="@array/colors_list"
+            android:entryValues="@array/colors_list"
+            android:key="txtCol"
+            android:summary="Select the color of the text"
+            android:title="Text Color" />
+
+
+
+        <ListPreference
+
+            android:dialogTitle="Background Color"
+
+            android:entries="@array/colors_list"
+            android:entryValues="@array/colors_list"
+            android:key="bgColor"
+            android:summary="Select the background color for the text"
+            android:title="BG Color" />
+        <Preference android:title="Save Data"
+            android:key="SaveData"
+            android:summary="Save and Return"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_header_about">
+
+        <Preference
+            android:selectable="false"
+            android:summary="Cue is an app that helps you to remember the most important of your tasks in a very efficient way." />
+
+        <Preference
+            android:summary="1.2"
+            android:title="Version" />
+        <Preference
+            android:summary="Anul Agarwal (anulagarwal12@gmail.com)"
+            android:title="Developer" />
+
+        <!-- preference opens url in browser -->
+
+    </PreferenceCategory>
+</PreferenceScreen>
