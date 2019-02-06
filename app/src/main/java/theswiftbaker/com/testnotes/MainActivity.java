@@ -37,6 +37,7 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -80,7 +81,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnTouchListener {
     EditText EditText1;
 
     SeekBar txtSize, topOffset, leftOffset;
@@ -104,6 +105,7 @@ BroadcastReceiver br;
 
 EditText[] et;
 Switch switch1;
+boolean isOptionsDisplayed;
 
     @Override
     @TargetApi(21)
@@ -111,6 +113,8 @@ Switch switch1;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
          prefs = getSharedPreferences("textSettings", Context.MODE_PRIVATE);
+
+
 br = null;
 br = new AlarmReceiver();
 ((AlarmReceiver) br).setMainActivityHandler(this);
@@ -119,12 +123,12 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
         cal = Calendar.getInstance();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        txtSize = (SeekBar) findViewById(R.id.txtSize);
-        topOffset = (SeekBar) findViewById(R.id.topOffset);
-        leftOffset = (SeekBar) findViewById(R.id.leftOffset);
-        txtSizeText = (TextView) findViewById(R.id.txtSizeText);
-        topOffText = (TextView) findViewById(R.id.topOffText);
-        leftOffText = (TextView) findViewById(R.id.leftOffText);
+      //  txtSize = (SeekBar) findViewById(R.id.txtSize);
+      //  topOffset = (SeekBar) findViewById(R.id.topOffset);
+     //   leftOffset = (SeekBar) findViewById(R.id.leftOffset);
+     //   txtSizeText = (TextView) findViewById(R.id.txtSizeText);
+     //   topOffText = (TextView) findViewById(R.id.topOffText);
+     //   leftOffText = (TextView) findViewById(R.id.leftOffText);
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
         switch1 = (Switch) findViewById(R.id.switch1);
 
@@ -189,12 +193,12 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
             //TODO
         }
 
-        leftOffText.setText(Integer.toString(prefs.getInt("leftOff", 100)));
+        EditText1.setX((float)(prefs.getInt("leftOff", 100)));
 
 
-        txtSizeText.setText(Integer.toString(prefs.getInt("txtSize", 100)));
-
-        topOffText.setText(Integer.toString(prefs.getInt("topOff", 100)));
+   //     txtSizeText.setText(Integer.toString(prefs.getInt("txtSize", 100)));
+        EditText1.setTextSize((float)prefs.getInt("txtSize", 100));
+        topOffText.setY((float)(prefs.getInt("topOff", 100)));
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
 
@@ -204,7 +208,7 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
 
         int width = displayMetrics.widthPixels;
 
-        txtSize.setMax(200);
+     /*   txtSize.setMax(200);
         txtSize.setProgress(prefs.getInt("txtSize", 100));
 
         topOffset.setMax(height);
@@ -265,11 +269,15 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
                 mFirebaseAnalytics.logEvent("MainSettings", bundle);
             }
         });
-
+*/
 
         EditText1 = (EditText) findViewById(R.id.editText1);
 
-        ImageButton fab = (ImageButton) findViewById(R.id.checkBtn);
+        final ImageButton fab = (ImageButton) findViewById(R.id.checkBtn);
+        switch1.setVisibility(View.VISIBLE);
+        fab.setVisibility(View.VISIBLE);
+        isOptionsDisplayed = true;
+
      //   mInterstitialAd.show();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -279,9 +287,9 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
 
 
                 SharedPreferences.Editor editor = getSharedPreferences("textSettings", Context.MODE_PRIVATE).edit();
-                editor.putInt("txtSize", txtSize.getProgress());
-                editor.putInt("leftOff", leftOffset.getProgress());
-                editor.putInt("topOff", topOffset.getProgress());
+                editor.putInt("txtSize", Math.round(EditText1.getTextSize()));
+                editor.putInt("leftOff",(Math.round(EditText1.getX())));
+                editor.putInt("topOff", (Math.round(EditText1.getY())));
                 editor.putBoolean("hasWallpaperSet", true);
                 bundle.putString("SetReminder", "Reminder set");
                 mFirebaseAnalytics.logEvent("MainSettings", bundle);
@@ -338,87 +346,39 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
             }
         });
 
-
-   /*
-         cb = (CheckBox)findViewById(R.id.checkBox);
-        rg = (RadioGroup)findViewById(R.id.radioGroup);
-        rb1 =(RadioButton) findViewById(R.id.radioButton);
-        rb2 = (RadioButton)findViewById(R.id.radioButton2);
-           timePickerBtn = (Button) findViewById(R.id.timeSetBtn);
-
-    txtDate = (EditText) findViewById(R.id.txtDate);
-        txtTime = (EditText) findViewById(R.id.txtTime);
-
-         cb.setOnClickListener(new View.OnClickListener(
-
-        ) {
+        cv.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View v) {
+            public boolean onLongClick(View v) {
+                if(isOptionsDisplayed){
 
-                if(cb.isChecked()){
-
-                    rg.setEnabled( true);
-                    timePickerBtn.setEnabled(true);
-                    rb1.setEnabled(true);
-                    rb2.setEnabled(true);
-                }else{
-
-                    rg.setEnabled( false);
-                    timePickerBtn.setEnabled(false);
-                    rb1.setEnabled(false);
-                    rb2.setEnabled(false);
+                    switch1.setVisibility(View.INVISIBLE);
+                    fab.setVisibility(View.INVISIBLE);
+                    isOptionsDisplayed = false;
+                }
+                else{
+                    switch1.setVisibility(View.VISIBLE);
+                    fab.setVisibility(View.VISIBLE);
+                    isOptionsDisplayed = true;
                 }
 
+                return false;
             }
         });
 
 
+EditText1.setOnTouchListener(new View.OnTouchListener() {
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
 
-    timePickerBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(!isOptionsDisplayed) {
+            EditText1.setX(x);
+            EditText1.setY(y);
+        }
+        return false;
 
+    }
 
-                final Calendar c = Calendar.getInstance();
-                mHour = c.get(Calendar.HOUR_OF_DAY);
-                mMinute = c.get(Calendar.MINUTE);
-
-                // Launch Time Picker Dialog
-                TimePickerDialog timePickerDialog = new TimePickerDialog(MainActivity.this,
-                        new TimePickerDialog.OnTimeSetListener() {
-
-                            @Override
-                            public void onTimeSet(TimePicker view, int hourOfDay,
-                                                  int minute) {
-
-                                txtTime.setText(hourOfDay + ":" + minute);
-                                final Calendar c = Calendar.getInstance();
-                                mYear = c.get(Calendar.YEAR);
-                                mMonth = c.get(Calendar.MONTH);
-                                mDay = c.get(Calendar.DAY_OF_MONTH);
-                                final TimePicker timeView = view;
-
-                                final DatePickerDialog datePickerDialog = new DatePickerDialog(MainActivity.this,
-                                        new DatePickerDialog.OnDateSetListener() {
-
-                                            @RequiresApi(api = Build.VERSION_CODES.M)
-                                            @Override
-                                            public void onDateSet(DatePicker view, int year,
-                                                                  int monthOfYear, int dayOfMonth) {
-
-                                                txtDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-                                                cal.set(view.getYear(),view.getMonth(),view.getDayOfMonth(), timeView.getHour(),timeView.getMinute(),0);
-                                            }
-                                        }, mYear, mMonth, mDay);
-                                datePickerDialog.show();
-                            }
-                        }, mHour, mMinute, false);
-                timePickerDialog.show();
-
-            }
-        });
-*/
-
+});
     }
 
     public void clearText() {
@@ -430,6 +390,47 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
 
     }
 
+    final static float STEP = 200;
+    TextView mytv;
+    float mRatio = 1.0f;
+    int mBaseDist;
+    float mBaseRatio;
+    float fontsize = 13;
+    float x,y;
+    public boolean onTouchEvent(MotionEvent event) {
+
+        if(!isOptionsDisplayed) {
+            if (event.getPointerCount() == 2) {
+
+                int action = event.getAction();
+                int pureaction = action & MotionEvent.ACTION_MASK;
+                if (pureaction == MotionEvent.ACTION_POINTER_DOWN) {
+                    mBaseDist = getDistance(event);
+                    mBaseRatio = mRatio;
+                } else {
+                    float delta = (getDistance(event) - mBaseDist) / STEP;
+                    float multi = (float) Math.pow(2, delta);
+                    mRatio = Math.min(1024.0f, Math.max(0.1f, mBaseRatio * multi));
+                    EditText1.setTextSize(mRatio + 13);
+                }
+            } else {
+                x = event.getX();
+                y = event.getY();
+
+            }
+        }
+        return true;
+    }
+
+    int getDistance(MotionEvent event) {
+        int dx = (int) (event.getX(0) - event.getX(1));
+        int dy = (int) (event.getY(0) - event.getY(1));
+        return (int) (Math.sqrt(dx * dx + dy * dy));
+    }
+
+    public boolean onTouch(View v, MotionEvent event) {
+        return false;
+    }
 public void setWallpaper(Context context){
 
 Save("NoteText1.txt",context.getSharedPreferences("textSettings",MODE_PRIVATE).getString("textToWallpaper",""));
@@ -686,8 +687,8 @@ updateTemporaryBG();
 
     public Bitmap drawTextOverWallpaper(String text, int textWidth, int color) {
 
-        int txtCol = Color.WHITE;
-        int bgCol = Color.BLACK;
+        int txtCol =Color.parseColor("#f7f1e3");
+        int bgCol = Color.parseColor("#1e272e");
         int txtSize;
         String bgColor;
         int rightOff;
@@ -715,7 +716,7 @@ updateTemporaryBG();
                 break;
 
             case "White":
-                txtCol = Color.WHITE;
+                txtCol = Color.parseColor("#f7f1e3");
                 break;
 
             case "Black":
@@ -740,7 +741,7 @@ updateTemporaryBG();
                 break;
 
             case "White":
-                bgCol = Color.WHITE;
+                bgCol =Color.parseColor("#f7f1e3");
                 break;
 
             case "Black":
@@ -756,7 +757,7 @@ updateTemporaryBG();
         TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.LINEAR_TEXT_FLAG);
         textPaint.setStyle(Paint.Style.FILL);
         textPaint.setColor(txtCol);
-        textPaint.setTextSize(txtSize);
+        textPaint.setTextSize(mRatio+13);
         textPaint.bgColor = bgCol;
         StaticLayout mTextLayout = new StaticLayout(text, textPaint, textWidth+32, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 
@@ -802,7 +803,7 @@ updateTemporaryBG();
         //Draw text
         c.save();
         //c.translate(rightOff, ((height/2)-400)+topOff);
-        c.translate(rightOff, topOff);
+        c.translate(x, y);
 
 
         Paint p = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.LINEAR_TEXT_FLAG);
