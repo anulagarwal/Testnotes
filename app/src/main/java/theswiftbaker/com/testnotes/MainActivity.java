@@ -102,18 +102,18 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
      Calendar cal;
     SharedPreferences prefs ;
 BroadcastReceiver br;
-
+WallpaperReceiver wr;
 EditText[] et;
 Switch switch1;
 boolean isOptionsDisplayed;
-
+boolean isCardDisplayed;
     @Override
     @TargetApi(21)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
          prefs = getSharedPreferences("textSettings", Context.MODE_PRIVATE);
-
+isCardDisplayed = true;
 
 br = null;
 br = new AlarmReceiver();
@@ -123,12 +123,12 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
         cal = Calendar.getInstance();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-      //  txtSize = (SeekBar) findViewById(R.id.txtSize);
-      //  topOffset = (SeekBar) findViewById(R.id.topOffset);
-     //   leftOffset = (SeekBar) findViewById(R.id.leftOffset);
-     //   txtSizeText = (TextView) findViewById(R.id.txtSizeText);
-     //   topOffText = (TextView) findViewById(R.id.topOffText);
-     //   leftOffText = (TextView) findViewById(R.id.leftOffText);
+        txtSize = (SeekBar) findViewById(R.id.txtSize);
+        topOffset = (SeekBar) findViewById(R.id.topOffset);
+        leftOffset = (SeekBar) findViewById(R.id.leftOffset);
+       txtSizeText = (TextView) findViewById(R.id.txtSizeText);
+       topOffText = (TextView) findViewById(R.id.topOffText);
+        leftOffText = (TextView) findViewById(R.id.leftOffText);
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
         switch1 = (Switch) findViewById(R.id.switch1);
 
@@ -152,6 +152,8 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
  //       mAdView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
         mAdView.loadAd(adRequest);
 
+
+
  //       Toast.makeText(this, "EActivity Started", Toast.LENGTH_LONG).show();
         // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
 
@@ -161,7 +163,7 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
 
 
 
-        chargerReceiver = new BroadcastReceiver() {
+   /*     chargerReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 // TODO: Awesome things
@@ -170,6 +172,7 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
                 if(!sp.getBoolean("hasWallpaperSet",false) ){
 
                     resetApp();
+                    Toast.makeText(getApplicationContext(), "Wallpaper Changed12", Toast.LENGTH_SHORT).show();
 
                 }
                 else{
@@ -185,21 +188,30 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
         registerReceiver(
                 chargerReceiver,
                 new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED)
-        );
+        );*/
 
-
+/*IntentFilter intentFilter = new IntentFilter();
+intentFilter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
+        intentFilter.setPriority(100);
+        wr = new WallpaperReceiver();
+        registerReceiver(wr,intentFilter);
+        Intent backgroundService = new Intent(getApplicationContext(), WallpaperService.class);
+        startService(backgroundService);
+*/
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         } else {
             //TODO
         }
 
-        EditText1.setX((float)(prefs.getInt("leftOff", 100)));
+        //EditText1.setX((float)(prefs.getInt("leftOff", 100)));
 
 
-   //     txtSizeText.setText(Integer.toString(prefs.getInt("txtSize", 100)));
-        EditText1.setTextSize((float)prefs.getInt("txtSize", 100));
-        EditText1.setY((float)(prefs.getInt("topOff", 100)));
+        txtSizeText.setText(Integer.toString(prefs.getInt("txtSize", 100)));
+       // EditText1.setTextSize((float)prefs.getInt("txtSize", 100));
+      //  EditText1.setY((float)(prefs.getInt("topOff", 100)));
+leftOffText.setText(Integer.toString(prefs.getInt("leftOff", 100)));
+        topOffText.setText(Integer.toString(prefs.getInt("topOff", 100)));
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
 
@@ -209,7 +221,7 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
 
         int width = displayMetrics.widthPixels;
 
-     /*   txtSize.setMax(200);
+        txtSize.setMax(200);
         txtSize.setProgress(prefs.getInt("txtSize", 100));
 
         topOffset.setMax(height);
@@ -270,11 +282,12 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
                 mFirebaseAnalytics.logEvent("MainSettings", bundle);
             }
         });
-*/
+
 
 
         final ImageButton fab = (ImageButton) findViewById(R.id.checkBtn);
         switch1.setVisibility(View.VISIBLE);
+        switch1.setChecked(true);
         fab.setVisibility(View.VISIBLE);
         isOptionsDisplayed = true;
 
@@ -283,16 +296,36 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
             @Override
             public void onClick(View view) {
 
+                String root = getFilesDir().toString();
+                //Environment.getRootDirectory().toString();
+                File myDir = new File(root);
+                myDir.mkdirs();
+                String originalImage = "/tempImage.png";
+                File originalWallpaper = new File(myDir, originalImage);
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.ARGB_4444;
+                Bitmap bitmap = BitmapFactory.decodeFile(root + originalImage, options);
+                //   updateTemporaryBG();
+                //   Bitmap bitmap2 = BitmapFactory.decodeFile(root + originalImage, options);
+
+                if (bitmap.sameAs(((BitmapDrawable) WallpaperManager.getInstance(MainActivity.this).getDrawable()).getBitmap())) {
 
 
+                } else {
 
-                SharedPreferences.Editor editor = getSharedPreferences("textSettings", Context.MODE_PRIVATE).edit();
-                editor.putInt("txtSize", Math.round(EditText1.getTextSize()));
-                editor.putInt("leftOff",(Math.round(EditText1.getX())));
-                editor.putInt("topOff", (Math.round(EditText1.getY())));
-                editor.putBoolean("hasWallpaperSet", true);
-                bundle.putString("SetReminder", "Reminder set");
-                mFirebaseAnalytics.logEvent("MainSettings", bundle);
+                    resetApp();
+                }
+
+                    if (isCardDisplayed) {
+                        SharedPreferences.Editor editor = getSharedPreferences("textSettings", Context.MODE_PRIVATE).edit();
+                        editor.putInt("txtSize", Math.round(txtSize.getProgress()));
+                        editor.putInt("leftOff", (Math.round(leftOffset.getProgress())));
+                        editor.putInt("topOff", (Math.round(topOffset.getProgress())));
+                        editor.putBoolean("hasWallpaperSet", true);
+                        bundle.putString("SetReminder", "Reminder set");
+                        mFirebaseAnalytics.logEvent("MainSettings", bundle);
+                        editor.commit();
+
              /*   if(cb.isChecked()) {
                     Intent intent=new Intent(MainActivity.this,AlarmReceiver.class);
                     PendingIntent mAlarmSender=PendingIntent.getBroadcast(MainActivity.this,23454546, intent,0);
@@ -307,10 +340,11 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
 
 
                 }*/
-                Save("NoteText1.txt",String.valueOf(EditText1.getText().toString()));
-                editor.commit();
+                        Save("NoteText1.txt", String.valueOf(EditText1.getText().toString()));
+                        Toast.makeText(getApplicationContext(),"Reminder Set In Wallpaper!", Toast.LENGTH_LONG).show();
+                    }
+                }
 
-            }
         });
 
 
@@ -341,12 +375,17 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
                     bundle.putString("ResetButton", "Reset Button");
                     mFirebaseAnalytics.logEvent("MainSettings", bundle);
                     clearText();
+                    isCardDisplayed = false;
+                    Toast.makeText(getApplicationContext(),"Reminder Removed!", Toast.LENGTH_LONG).show();
 
+                }
+                else{
+                    isCardDisplayed = true;
                 }
             }
         });
 
-        cv.setOnLongClickListener(new View.OnLongClickListener() {
+  /*      cv.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 if(isOptionsDisplayed){
@@ -378,7 +417,7 @@ EditText1.setOnTouchListener(new View.OnTouchListener() {
 
     }
 
-});
+});*/
     }
 
     public void clearText() {
@@ -390,7 +429,7 @@ EditText1.setOnTouchListener(new View.OnTouchListener() {
 
     }
 
-    final static float STEP = 200;
+ /*   final static float STEP = 200;
     TextView mytv;
     float mRatio = 1.0f;
     int mBaseDist;
@@ -406,7 +445,7 @@ EditText1.setOnTouchListener(new View.OnTouchListener() {
                 int pureaction = action & MotionEvent.ACTION_MASK;
                 if (pureaction == MotionEvent.ACTION_POINTER_DOWN) {
                     mBaseDist = getDistance(event);
-                    mBaseRatio = mRatio;
+                    mBaseRatio =  EditText1.getTextSize();
                 } else {
                     float delta = (getDistance(event) - mBaseDist) / STEP;
                     float multi = (float) Math.pow(2, delta);
@@ -426,13 +465,13 @@ EditText1.setOnTouchListener(new View.OnTouchListener() {
 
         EditText1.clearFocus();
         super.onBackPressed();
-    }
+            }
     int getDistance(MotionEvent event) {
         int dx = (int) (event.getX(0) - event.getX(1));
         int dy = (int) (event.getY(0) - event.getY(1));
         return (int) (Math.sqrt(dx * dx + dy * dy));
     }
-
+*/
     public boolean onTouch(View v, MotionEvent event) {
         return false;
     }
@@ -462,11 +501,7 @@ Save("NoteText1.txt",context.getSharedPreferences("textSettings",MODE_PRIVATE).g
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(chargerReceiver);
-    }
+
     public byte[] getBytesFromBitmap(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
@@ -518,7 +553,12 @@ Save("NoteText1.txt",context.getSharedPreferences("textSettings",MODE_PRIVATE).g
                 e.printStackTrace();
             }
         }
-//updateTemporaryBG();
+
+
+
+
+
+updateTemporaryBG();
 
     }
 
@@ -597,7 +637,7 @@ Save("NoteText1.txt",context.getSharedPreferences("textSettings",MODE_PRIVATE).g
             SharedPreferences.Editor edit = getSharedPreferences("textSettings", Context.MODE_PRIVATE).edit();
             edit.putBoolean("FirstTimeOpen",false);
             edit.commit();
-            Toast.makeText(this,"ffiiii",Toast.LENGTH_LONG).show();
+
             updateTemporaryBG();
         }
         String text = EditText1.getText().toString();
@@ -654,7 +694,7 @@ updateTemporaryBG();
 
         try {
             FileOutputStream out = new FileOutputStream(originalWallpaper2);
-           // origPaper2.compress(Bitmap.CompressFormat.PNG, 100, out);
+            origPaper2.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.write(getBytesFromBitmap(origPaper2));
 
             out.flush();
@@ -754,7 +794,7 @@ updateTemporaryBG();
                 break;
         }
 
-        Toast.makeText(getApplicationContext(),""+ textWidth,Toast.LENGTH_SHORT).show();
+
 
 
 
@@ -762,7 +802,7 @@ updateTemporaryBG();
         TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.LINEAR_TEXT_FLAG);
         textPaint.setStyle(Paint.Style.FILL);
         textPaint.setColor(txtCol);
-        textPaint.setTextSize(mRatio+13);
+        textPaint.setTextSize(txtSize);
         textPaint.bgColor = bgCol;
         StaticLayout mTextLayout = new StaticLayout(text, textPaint, textWidth+32, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 
@@ -808,7 +848,7 @@ updateTemporaryBG();
         //Draw text
         c.save();
         //c.translate(rightOff, ((height/2)-400)+topOff);
-        c.translate(x, y);
+        c.translate(leftOffset.getProgress(), topOffset.getProgress());
 
 
         Paint p = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.LINEAR_TEXT_FLAG);

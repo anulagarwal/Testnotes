@@ -36,7 +36,7 @@
             android:summary="Cue is an app that helps you to remember the most important of your tasks in a very efficient way." />
 
         <Preference
-            android:summary="1.2"
+            android:summary="2.01"
             android:title="Version" />
         <Preference
             android:summary="Anul Agarwal (anulagarwal12@gmail.com)"
