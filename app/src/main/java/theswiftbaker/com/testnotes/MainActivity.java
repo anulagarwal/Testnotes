@@ -428,11 +428,17 @@ leftOffText.setText(Integer.toString(prefs.getInt("leftOff", 100)));
                     rewardedAd.show(activityContext, adCallback);
 
                     SharedPreferences.Editor editor = getSharedPreferences("textSettings", Context.MODE_PRIVATE).edit();
-                    editor.putInt("index", 0);
+                    editor.putInt("AdShown", 0);
 
                     mFirebaseAnalytics.logEvent("AdShown", bundle);
                     editor.commit();
                 }
+
+                SharedPreferences.Editor editorw = getSharedPreferences("textSettings", Context.MODE_PRIVATE).edit();
+                editorw.putInt("AdShown", prefs.getInt("AdShown", 0) + 1);
+
+
+                editorw.commit();
                 //   updateTemporaryBG();
                 //   Bitmap bitmap2 = BitmapFactory.decodeFile(root + originalImage, options);
                 if (retrieveTempBG() == null) {
