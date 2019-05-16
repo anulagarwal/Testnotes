@@ -2,6 +2,7 @@ package theswiftbaker.com.testnotes;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
@@ -25,6 +26,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -59,14 +61,18 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.google.android.gms.ads.AdListener;
+
+import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.rewarded.RewardItem;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdCallback;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -79,6 +85,7 @@ import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Arrays;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener {
@@ -97,8 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private int mYear, mMonth, mDay, mHour, mMinute;
     Button timePickerBtn;
     EditText txtDate, txtTime;
-    InterstitialAd mInterstitialAd;
-     AdView mAdView;
+
      Calendar cal;
     SharedPreferences prefs ;
 BroadcastReceiver br;
@@ -107,6 +113,78 @@ EditText[] et;
 Switch switch1;
 boolean isOptionsDisplayed;
 boolean isCardDisplayed;
+    private AdView mAdView;
+
+    private RewardedAd rewardedAd;
+
+    private static boolean compare(Bitmap b1, Bitmap b2) {
+        if (b1.getWidth() == b2.getWidth() && b1.getHeight() == b2.getHeight()) {
+            int[] pixels1 = new int[b1.getWidth() * b1.getHeight()];
+            int[] pixels2 = new int[b2.getWidth() * b2.getHeight()];
+            b1.getPixels(pixels1, 0, b1.getWidth(), 0, 0, b1.getWidth(), b1.getHeight());
+            b2.getPixels(pixels2, 0, b2.getWidth(), 0, 0, b2.getWidth(), b2.getHeight());
+            return Arrays.equals(pixels1, pixels2);
+        } else {
+            return false;
+        }
+    }
+
+    public void clearText() {
+        EditText1.setText("");
+
+
+        //    Save("NoteText1.txt");
+        resetToWallpaper();
+
+    }
+
+    /*   final static float STEP = 200;
+       TextView mytv;
+       float mRatio = 1.0f;
+       int mBaseDist;
+       float mBaseRatio;
+       float fontsize = 13;
+       float x,y;
+       public boolean onTouchEvent(MotionEvent event) {
+
+           if(!isOptionsDisplayed) {
+               if (event.getPointerCount() == 2) {
+
+                   int action = event.getAction();
+                   int pureaction = action & MotionEvent.ACTION_MASK;
+                   if (pureaction == MotionEvent.ACTION_POINTER_DOWN) {
+                       mBaseDist = getDistance(event);
+                       mBaseRatio =  EditText1.getTextSize();
+                   } else {
+                       float delta = (getDistance(event) - mBaseDist) / STEP;
+                       float multi = (float) Math.pow(2, delta);
+                       mRatio = Math.min(1024.0f, Math.max(0.1f, mBaseRatio * multi));
+                       EditText1.setTextSize(mRatio + 13);
+                   }
+               } else {
+                   x = event.getX();
+                   y = event.getY();
+
+               }
+           }
+           return true;
+       }
+       @Override
+       public void onBackPressed() {
+
+           EditText1.clearFocus();
+           super.onBackPressed();
+               }
+       int getDistance(MotionEvent event) {
+           int dx = (int) (event.getX(0) - event.getX(1));
+           int dy = (int) (event.getY(0) - event.getY(1));
+           return (int) (Math.sqrt(dx * dx + dy * dy));
+       }
+   */
+    public boolean onTouch(View v, MotionEvent event) {
+        return false;
+    }
+
     @Override
     @TargetApi(21)
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,25 +193,46 @@ boolean isCardDisplayed;
          prefs = getSharedPreferences("textSettings", Context.MODE_PRIVATE);
 isCardDisplayed = true;
 
-br = null;
-br = new AlarmReceiver();
-((AlarmReceiver) br).setMainActivityHandler(this);
-IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
-        registerReceiver(br,iff);
+        String admobID;
+
+        MobileAds.initialize(this, "ca-app-pub-1149253882244477~3819663696");
+
+
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+        rewardedAd = new RewardedAd(this,
+                "ca-app-pub-1149253882244477/6755276853");
+
+        RewardedAdLoadCallback adLoadCallback = new RewardedAdLoadCallback() {
+            @Override
+            public void onRewardedAdLoaded() {
+                // Ad successfully loaded.
+            }
+
+            @Override
+            public void onRewardedAdFailedToLoad(int errorCode) {
+                // Ad failed to load.
+            }
+        };
+        rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
+
+
         cal = Calendar.getInstance();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        txtSize = (SeekBar) findViewById(R.id.txtSize);
-        topOffset = (SeekBar) findViewById(R.id.topOffset);
-        leftOffset = (SeekBar) findViewById(R.id.leftOffset);
-       txtSizeText = (TextView) findViewById(R.id.txtSizeText);
-       topOffText = (TextView) findViewById(R.id.topOffText);
-        leftOffText = (TextView) findViewById(R.id.leftOffText);
+        txtSize = findViewById(R.id.txtSize);
+        topOffset = findViewById(R.id.topOffset);
+        leftOffset = findViewById(R.id.leftOffset);
+        txtSizeText = findViewById(R.id.txtSizeText);
+        topOffText = findViewById(R.id.topOffText);
+        leftOffText = findViewById(R.id.leftOffText);
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        switch1 = (Switch) findViewById(R.id.switch1);
+        switch1 = findViewById(R.id.switch1);
 
 // Obtain the FirebaseAnalytics instance.
-        EditText1 = (EditText) findViewById(R.id.editText1);
+        EditText1 = findViewById(R.id.editText1);
 
         hasChanged = false;
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(MainActivity.this);
@@ -143,14 +242,10 @@ IntentFilter iff = new IntentFilter("android.provider.AlarmClock");
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "MainScreen Loaded");
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
-        MobileAds.initialize(this, "ca-app-pub-1149253882244477~3819663696");
 
-        mAdView = findViewById(R.id.adView2);
-        AdRequest adRequest = new AdRequest.Builder()
-                .build();
 //        mAdView.setAdSize(AdSize.BANNER);
  //       mAdView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
-        mAdView.loadAd(adRequest);
+
 
 
 
@@ -284,8 +379,7 @@ leftOffText.setText(Integer.toString(prefs.getInt("leftOff", 100)));
         });
 
 
-
-        final ImageButton fab = (ImageButton) findViewById(R.id.checkBtn);
+        final ImageButton fab = findViewById(R.id.checkBtn);
         switch1.setVisibility(View.VISIBLE);
         switch1.setChecked(true);
         fab.setVisibility(View.VISIBLE);
@@ -305,18 +399,56 @@ leftOffText.setText(Integer.toString(prefs.getInt("leftOff", 100)));
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inPreferredConfig = Bitmap.Config.ARGB_4444;
                 Bitmap bitmap = BitmapFactory.decodeFile(root + originalImage, options);
+
+                if (rewardedAd.isLoaded() && prefs.getInt("AdShown", 0) == 2) {
+                    Activity activityContext = MainActivity.this;
+                    RewardedAdCallback adCallback = new RewardedAdCallback() {
+                        @Override
+                        public void onRewardedAdOpened() {
+                            // Ad opened.
+                        }
+
+                        @Override
+                        public void onRewardedAdClosed() {
+                            // Ad closed.
+
+                            rewardedAd = createAndLoadRewardedAd();
+                        }
+
+                        @Override
+                        public void onUserEarnedReward(@NonNull RewardItem reward) {
+                            // User earned reward.
+                        }
+
+                        @Override
+                        public void onRewardedAdFailedToShow(int errorCode) {
+                            // Ad failed to display
+                        }
+                    };
+                    rewardedAd.show(activityContext, adCallback);
+
+                    SharedPreferences.Editor editor = getSharedPreferences("textSettings", Context.MODE_PRIVATE).edit();
+                    editor.putInt("index", 0);
+
+                    mFirebaseAnalytics.logEvent("AdShown", bundle);
+                    editor.commit();
+                }
                 //   updateTemporaryBG();
                 //   Bitmap bitmap2 = BitmapFactory.decodeFile(root + originalImage, options);
+                if (retrieveTempBG() == null) {
 
-                if (bitmap.sameAs(((BitmapDrawable) WallpaperManager.getInstance(MainActivity.this).getDrawable()).getBitmap())) {
+
+                } else if (compare(retrieveTempBG(), ((BitmapDrawable) WallpaperManager.getInstance(MainActivity.this).getDrawable()).getBitmap())) {
 
 
                 } else {
 
                     resetApp();
+
                 }
 
                     if (isCardDisplayed) {
+
                         SharedPreferences.Editor editor = getSharedPreferences("textSettings", Context.MODE_PRIVATE).edit();
                         editor.putInt("txtSize", Math.round(txtSize.getProgress()));
                         editor.putInt("leftOff", (Math.round(leftOffset.getProgress())));
@@ -348,14 +480,10 @@ leftOffText.setText(Integer.toString(prefs.getInt("leftOff", 100)));
         });
 
 
-
-
-
         EditText1.setText(Open("NoteText1.txt"));
 
 
-
-        cv = (CardView)findViewById(R.id.cardView);
+        cv = findViewById(R.id.cardView);
         cv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -420,66 +548,23 @@ EditText1.setOnTouchListener(new View.OnTouchListener() {
 });*/
     }
 
-    public void clearText() {
-        EditText1.setText("");
-
-
-        //    Save("NoteText1.txt");
-        resetToWallpaper();
-
-    }
-
- /*   final static float STEP = 200;
-    TextView mytv;
-    float mRatio = 1.0f;
-    int mBaseDist;
-    float mBaseRatio;
-    float fontsize = 13;
-    float x,y;
-    public boolean onTouchEvent(MotionEvent event) {
-
-        if(!isOptionsDisplayed) {
-            if (event.getPointerCount() == 2) {
-
-                int action = event.getAction();
-                int pureaction = action & MotionEvent.ACTION_MASK;
-                if (pureaction == MotionEvent.ACTION_POINTER_DOWN) {
-                    mBaseDist = getDistance(event);
-                    mBaseRatio =  EditText1.getTextSize();
-                } else {
-                    float delta = (getDistance(event) - mBaseDist) / STEP;
-                    float multi = (float) Math.pow(2, delta);
-                    mRatio = Math.min(1024.0f, Math.max(0.1f, mBaseRatio * multi));
-                    EditText1.setTextSize(mRatio + 13);
-                }
-            } else {
-                x = event.getX();
-                y = event.getY();
-
+    public RewardedAd createAndLoadRewardedAd() {
+        RewardedAd rewardedAd = new RewardedAd(this,
+                "ca-app-pub-1149253882244477/6755276853");
+        RewardedAdLoadCallback adLoadCallback = new RewardedAdLoadCallback() {
+            @Override
+            public void onRewardedAdLoaded() {
+                // Ad successfully loaded.
             }
-        }
-        return true;
-    }
-    @Override
-    public void onBackPressed() {
 
-        EditText1.clearFocus();
-        super.onBackPressed();
+            @Override
+            public void onRewardedAdFailedToLoad(int errorCode) {
+                // Ad failed to load.
             }
-    int getDistance(MotionEvent event) {
-        int dx = (int) (event.getX(0) - event.getX(1));
-        int dy = (int) (event.getY(0) - event.getY(1));
-        return (int) (Math.sqrt(dx * dx + dy * dy));
+        };
+        rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
+        return rewardedAd;
     }
-*/
-    public boolean onTouch(View v, MotionEvent event) {
-        return false;
-    }
-public void setWallpaper(Context context){
-
-Save("NoteText1.txt",context.getSharedPreferences("textSettings",MODE_PRIVATE).getString("textToWallpaper",""));
-
-}
     private void resetToWallpaper() {
 
         String root = getFilesDir().toString();
@@ -555,9 +640,6 @@ Save("NoteText1.txt",context.getSharedPreferences("textSettings",MODE_PRIVATE).g
         }
 
 
-
-
-
 updateTemporaryBG();
 
     }
@@ -630,6 +712,12 @@ updateTemporaryBG();
         return content;
     }
 
+    public void setWallpaper(Context context) {
+
+        Save("NoteText1.txt", context.getSharedPreferences("textSettings", MODE_PRIVATE).getString("textToWallpaper", ""));
+
+    }
+
     public void Convert() {
         SharedPreferences prefsa = getSharedPreferences("textSettings", Context.MODE_PRIVATE);
         if(prefsa.getBoolean("FirstTimeOpen",true)){
@@ -647,7 +735,7 @@ text = text.trim();
         int color = Color.BLACK;
 
         Bitmap img;
-        if(text== "" || text == null || text.length()==0) {
+        if (text == "" || text == null || text.length() == 0) {
 
             resetToWallpaper();
 
@@ -726,6 +814,7 @@ updateTemporaryBG();
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_4444;
         Bitmap origPaper1 = BitmapFactory.decodeFile(root+ originalImage, options);
+
         return  origPaper1;
     }
 
