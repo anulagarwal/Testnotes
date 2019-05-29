@@ -62,6 +62,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
@@ -88,6 +89,7 @@ import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.Calendar;
 
+import com.google.android.gms.ads.InterstitialAd;
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener {
     EditText EditText1;
 
@@ -114,7 +116,7 @@ Switch switch1;
 boolean isOptionsDisplayed;
 boolean isCardDisplayed;
     private AdView mAdView;
-
+    private InterstitialAd mInterstitialAd;
     private RewardedAd rewardedAd;
 
     private static boolean compare(Bitmap b1, Bitmap b2) {
@@ -202,7 +204,7 @@ isCardDisplayed = true;
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-        rewardedAd = new RewardedAd(this,
+        /*rewardedAd = new RewardedAd(this,
                 "ca-app-pub-1149253882244477/6755276853");
 
         RewardedAdLoadCallback adLoadCallback = new RewardedAdLoadCallback() {
@@ -216,8 +218,10 @@ isCardDisplayed = true;
                 // Ad failed to load.
             }
         };
-        rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
-
+       // rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);*/
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-1149253882244477/8215996284");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
         cal = Calendar.getInstance();
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -318,11 +322,17 @@ leftOffText.setText(Integer.toString(prefs.getInt("leftOff", 100)));
 
         txtSize.setMax(200);
         txtSize.setProgress(prefs.getInt("txtSize", 100));
+        txtSizeText.setText(" "+prefs.getInt("txtSize", 100));
 
         topOffset.setMax(height);
         topOffset.setProgress(prefs.getInt("topOff", 100));
+        topOffText.setText(" "+prefs.getInt("topOff", 100));
+
         leftOffset.setMax(width);
         leftOffset.setProgress(prefs.getInt("leftOff", 100));
+        leftOffText.setText(" "+prefs.getInt("leftOff", 100));
+
+
         txtSize.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -384,7 +394,14 @@ leftOffText.setText(Integer.toString(prefs.getInt("leftOff", 100)));
         switch1.setChecked(true);
         fab.setVisibility(View.VISIBLE);
         isOptionsDisplayed = true;
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                // Load the next interstitial.
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
 
+        });
      //   mInterstitialAd.show();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -400,8 +417,8 @@ leftOffText.setText(Integer.toString(prefs.getInt("leftOff", 100)));
                 options.inPreferredConfig = Bitmap.Config.ARGB_4444;
                 Bitmap bitmap = BitmapFactory.decodeFile(root + originalImage, options);
 
-                if (rewardedAd.isLoaded() && prefs.getInt("AdShown", 0) == 2) {
-                    Activity activityContext = MainActivity.this;
+                if (mInterstitialAd.isLoaded() && prefs.getInt("AdShown", 0) == 3) {
+                   /* Activity activityContext = MainActivity.this;
                     RewardedAdCallback adCallback = new RewardedAdCallback() {
                         @Override
                         public void onRewardedAdOpened() {
@@ -425,8 +442,8 @@ leftOffText.setText(Integer.toString(prefs.getInt("leftOff", 100)));
                             // Ad failed to display
                         }
                     };
-                    rewardedAd.show(activityContext, adCallback);
-
+                    rewardedAd.show(activityContext, adCallback);*/
+                    mInterstitialAd.show();
                     SharedPreferences.Editor editor = getSharedPreferences("textSettings", Context.MODE_PRIVATE).edit();
                     editor.putInt("AdShown", 0);
 
@@ -464,20 +481,6 @@ leftOffText.setText(Integer.toString(prefs.getInt("leftOff", 100)));
                         mFirebaseAnalytics.logEvent("MainSettings", bundle);
                         editor.commit();
 
-             /*   if(cb.isChecked()) {
-                    Intent intent=new Intent(MainActivity.this,AlarmReceiver.class);
-                    PendingIntent mAlarmSender=PendingIntent.getBroadcast(MainActivity.this,23454546, intent,0);
-                    AlarmManager alm=(AlarmManager)getSystemService(ALARM_SERVICE);
-
-                    alm.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),mAlarmSender);
-                    editor.putString("textToWallpaper",  EditText1.getText().toString());
-
-                }
-                else{
-                    Save("NoteText1.txt",String.valueOf(EditText1.getText().toString()));
-
-
-                }*/
                         Save("NoteText1.txt", String.valueOf(EditText1.getText().toString()));
                         Toast.makeText(getApplicationContext(),"Reminder Set In Wallpaper!", Toast.LENGTH_LONG).show();
                     }
@@ -519,39 +522,7 @@ leftOffText.setText(Integer.toString(prefs.getInt("leftOff", 100)));
             }
         });
 
-  /*      cv.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if(isOptionsDisplayed){
 
-                    switch1.setVisibility(View.INVISIBLE);
-                    fab.setVisibility(View.INVISIBLE);
-                    isOptionsDisplayed = false;
-                }
-                else{
-                    switch1.setVisibility(View.VISIBLE);
-                    fab.setVisibility(View.VISIBLE);
-                    isOptionsDisplayed = true;
-                }
-
-                return false;
-            }
-        });
-
-
-EditText1.setOnTouchListener(new View.OnTouchListener() {
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-
-        if(!isOptionsDisplayed) {
-            EditText1.setX(x);
-            EditText1.setY(y);
-        }
-        return false;
-
-    }
-
-});*/
     }
 
     public RewardedAd createAndLoadRewardedAd() {
