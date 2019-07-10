@@ -2,19 +2,14 @@ package theswiftbaker.com.testnotes;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.DatePickerDialog;
-import android.app.PendingIntent;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.app.TimePickerDialog;
 import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -24,11 +19,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -38,59 +29,48 @@ import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
-import com.google.android.gms.ads.rewarded.RewardedAdCallback;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.RandomAccessFile;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Timer;
 
-import com.google.android.gms.ads.InterstitialAd;
-public class MainActivity extends AppCompatActivity implements View.OnTouchListener {
+public class MainActivity extends AppCompatActivity  {
     EditText EditText1;
 
     SeekBar txtSize, topOffset, leftOffset;
@@ -106,210 +86,55 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private int mYear, mMonth, mDay, mHour, mMinute;
     Button timePickerBtn;
     EditText txtDate, txtTime;
-
+Button savebtn;
      Calendar cal;
     SharedPreferences prefs ;
 BroadcastReceiver br;
 WallpaperReceiver wr;
 EditText[] et;
 Switch switch1;
+Switch timer;
+Spinner timerMinute;
 boolean isOptionsDisplayed;
 boolean isCardDisplayed;
     private AdView mAdView;
     private InterstitialAd mInterstitialAd;
     private RewardedAd rewardedAd;
+     Bundle bundle;
+Timer timerT;
+    public void showAlertDialogButtonClicked() {
+        // create an alert builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Settings");
+        // set the custom layout
+        final View customLayout = getLayoutInflater().inflate(R.layout.settingslayout, null);
+        builder.setView(customLayout);
 
-    private static boolean compare(Bitmap b1, Bitmap b2) {
-        if (b1.getWidth() == b2.getWidth() && b1.getHeight() == b2.getHeight()) {
-            int[] pixels1 = new int[b1.getWidth() * b1.getHeight()];
-            int[] pixels2 = new int[b2.getWidth() * b2.getHeight()];
-            b1.getPixels(pixels1, 0, b1.getWidth(), 0, 0, b1.getWidth(), b1.getHeight());
-            b2.getPixels(pixels2, 0, b2.getWidth(), 0, 0, b2.getWidth(), b2.getHeight());
-            return Arrays.equals(pixels1, pixels2);
-        } else {
-            return false;
-        }
-    }
-
-    public void clearText() {
-        EditText1.setText("");
-
-
-        //    Save("NoteText1.txt");
-        resetToWallpaper();
-
-    }
-
-    /*   final static float STEP = 200;
-       TextView mytv;
-       float mRatio = 1.0f;
-       int mBaseDist;
-       float mBaseRatio;
-       float fontsize = 13;
-       float x,y;
-       public boolean onTouchEvent(MotionEvent event) {
-
-           if(!isOptionsDisplayed) {
-               if (event.getPointerCount() == 2) {
-
-                   int action = event.getAction();
-                   int pureaction = action & MotionEvent.ACTION_MASK;
-                   if (pureaction == MotionEvent.ACTION_POINTER_DOWN) {
-                       mBaseDist = getDistance(event);
-                       mBaseRatio =  EditText1.getTextSize();
-                   } else {
-                       float delta = (getDistance(event) - mBaseDist) / STEP;
-                       float multi = (float) Math.pow(2, delta);
-                       mRatio = Math.min(1024.0f, Math.max(0.1f, mBaseRatio * multi));
-                       EditText1.setTextSize(mRatio + 13);
-                   }
-               } else {
-                   x = event.getX();
-                   y = event.getY();
-
-               }
-           }
-           return true;
-       }
-       @Override
-       public void onBackPressed() {
-
-           EditText1.clearFocus();
-           super.onBackPressed();
-               }
-       int getDistance(MotionEvent event) {
-           int dx = (int) (event.getX(0) - event.getX(1));
-           int dy = (int) (event.getY(0) - event.getY(1));
-           return (int) (Math.sqrt(dx * dx + dy * dy));
-       }
-   */
-    public boolean onTouch(View v, MotionEvent event) {
-        return false;
-    }
-
-    @Override
-    @TargetApi(21)
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-         prefs = getSharedPreferences("textSettings", Context.MODE_PRIVATE);
-isCardDisplayed = true;
-
-        String admobID;
-
-        MobileAds.initialize(this, "ca-app-pub-1149253882244477~3819663696");
-
-
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-
-        /*rewardedAd = new RewardedAd(this,
-                "ca-app-pub-1149253882244477/6755276853");
-
-        RewardedAdLoadCallback adLoadCallback = new RewardedAdLoadCallback() {
-            @Override
-            public void onRewardedAdLoaded() {
-                // Ad successfully loaded.
-            }
-
-            @Override
-            public void onRewardedAdFailedToLoad(int errorCode) {
-                // Ad failed to load.
-            }
-        };
-       // rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);*/
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-1149253882244477/8215996284");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
-
-        cal = Calendar.getInstance();
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        txtSize = findViewById(R.id.txtSize);
-        topOffset = findViewById(R.id.topOffset);
-        leftOffset = findViewById(R.id.leftOffset);
-        txtSizeText = findViewById(R.id.txtSizeText);
-        topOffText = findViewById(R.id.topOffText);
-        leftOffText = findViewById(R.id.leftOffText);
-        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        switch1 = findViewById(R.id.switch1);
+        txtSize = customLayout.findViewById(R.id.txtSize);
+        topOffset = customLayout.findViewById(R.id.topOffset);
+        leftOffset = customLayout.findViewById(R.id.leftOffset);
+        txtSizeText = customLayout.findViewById(R.id.txtSizeText2);
+        topOffText = customLayout.findViewById(R.id.topOffText);
+        leftOffText = customLayout.findViewById(R.id.leftOffText);
+        timer = customLayout.findViewById(R.id.timer1);
+        timerMinute = customLayout.findViewById(R.id.spinner);
 
 // Obtain the FirebaseAnalytics instance.
-        EditText1 = findViewById(R.id.editText1);
 
         hasChanged = false;
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(MainActivity.this);
-        final Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "1");
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Main");
-        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "MainScreen Loaded");
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+        timerMinute.setEnabled(false);
 
-
-//        mAdView.setAdSize(AdSize.BANNER);
- //       mAdView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
-
-
-
-
- //       Toast.makeText(this, "EActivity Started", Toast.LENGTH_LONG).show();
-        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
-
-       // mInterstitialAd = new InterstitialAd(this);
-      //  mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544~3347511713");
-      //  mInterstitialAd.loadAd(new AdRequest.Builder().build());
-
-
-
-   /*     chargerReceiver = new BroadcastReceiver() {
+        timer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onReceive(Context context, Intent intent) {
-                // TODO: Awesome things
-                SharedPreferences sp = getSharedPreferences("textSettings", Context.MODE_PRIVATE);
-                SharedPreferences.Editor edito = getSharedPreferences("textSettings", Context.MODE_PRIVATE).edit();
-                if(!sp.getBoolean("hasWallpaperSet",false) ){
-
-                    resetApp();
-                    Toast.makeText(getApplicationContext(), "Wallpaper Changed12", Toast.LENGTH_SHORT).show();
-
-                }
-                else{
-
-                    edito.putBoolean("hasWallpaperSet",false);
-
-                    edito.commit();
-
-                }
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                timerMinute.setEnabled(isChecked);
             }
-        };
-
-        registerReceiver(
-                chargerReceiver,
-                new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED)
-        );*/
-
-/*IntentFilter intentFilter = new IntentFilter();
-intentFilter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
-        intentFilter.setPriority(100);
-        wr = new WallpaperReceiver();
-        registerReceiver(wr,intentFilter);
-        Intent backgroundService = new Intent(getApplicationContext(), WallpaperService.class);
-        startService(backgroundService);
-*/
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-        } else {
-            //TODO
-        }
-
-        //EditText1.setX((float)(prefs.getInt("leftOff", 100)));
-
+        });
 
         txtSizeText.setText(Integer.toString(prefs.getInt("txtSize", 100)));
-       // EditText1.setTextSize((float)prefs.getInt("txtSize", 100));
-      //  EditText1.setY((float)(prefs.getInt("topOff", 100)));
-leftOffText.setText(Integer.toString(prefs.getInt("leftOff", 100)));
+        // EditText1.setTextSize((float)prefs.getInt("txtSize", 100));
+        //  EditText1.setY((float)(prefs.getInt("topOff", 100)));
+        leftOffText.setText(Integer.toString(prefs.getInt("leftOff", 100)));
         topOffText.setText(Integer.toString(prefs.getInt("topOff", 100)));
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -388,12 +213,119 @@ leftOffText.setText(Integer.toString(prefs.getInt("leftOff", 100)));
             }
         });
 
+        // add a button
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // send data from the AlertDialog to the Activity
+               //EditText editText = customLayout.findViewById(R.id.editText);
+                //sendDialogDataToActivity(editText.getText().toString());
+                SharedPreferences.Editor editor = getSharedPreferences("textSettings", Context.MODE_PRIVATE).edit();
+                editor.putInt("txtSize", Math.round(txtSize.getProgress()));
+                editor.putInt("leftOff", (Math.round(leftOffset.getProgress())));
+                editor.putInt("topOff", (Math.round(topOffset.getProgress())));
+                editor.putBoolean("hasWallpaperSet", true);
+                bundle.putString("SetReminder", "Reminder set");
+                mFirebaseAnalytics.logEvent("MainSettings", bundle);
+
+
+
+
+
+                if (mInterstitialAd.isLoaded() && prefs.getInt("AdShown", 0) == 2) {
+
+                    mInterstitialAd.show();
+
+                    editor.putInt("AdShown", 0);
+
+                    mFirebaseAnalytics.logEvent("AdShown", bundle);
+
+                }
+                editor.commit();
+            }
+        });
+        // create and show the alert dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    // do something with the data coming from the AlertDialog
+    private void sendDialogDataToActivity(String data) {
+        Toast.makeText(this, data, Toast.LENGTH_SHORT).show();
+    }
+
+    private static boolean compare(Bitmap b1, Bitmap b2) {
+        if (b1.getWidth() == b2.getWidth() && b1.getHeight() == b2.getHeight()) {
+            int[] pixels1 = new int[b1.getWidth() * b1.getHeight()];
+            int[] pixels2 = new int[b2.getWidth() * b2.getHeight()];
+            b1.getPixels(pixels1, 0, b1.getWidth(), 0, 0, b1.getWidth(), b1.getHeight());
+            b2.getPixels(pixels2, 0, b2.getWidth(), 0, 0, b2.getWidth(), b2.getHeight());
+            return Arrays.equals(pixels1, pixels2);
+        } else {
+            return false;
+        }
+    }
+
+    public void clearText() {
+        EditText1.setText("");
+
+
+        //    Save("NoteText1.txt");
+        resetToWallpaper();
+
+    }
+
+
+
+    @Override
+
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+         prefs = getSharedPreferences("textSettings", Context.MODE_PRIVATE);
+isCardDisplayed = true;
+        int permissionCheck = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+        String admobID;
+        savebtn = findViewById(R.id.savebtn);
+        MobileAds.initialize(this, "ca-app-pub-1149253882244477~3819663696");
+savebtn.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+    showAlertDialogButtonClicked();}
+});
+
+
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-1149253882244477/8215996284");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+        cal = Calendar.getInstance();
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(MainActivity.this);
+       bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "1");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Main");
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "MainScreen Loaded");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+        switch1 = findViewById(R.id.timer1);
+
+
+
 
         final ImageButton fab = findViewById(R.id.checkBtn);
-        switch1.setVisibility(View.VISIBLE);
+
         switch1.setChecked(true);
-        fab.setVisibility(View.VISIBLE);
-        isOptionsDisplayed = true;
+
+        EditText1 = findViewById(R.id.editText1);
+
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdClosed() {
@@ -402,22 +334,74 @@ leftOffText.setText(Integer.toString(prefs.getInt("leftOff", 100)));
             }
 
         });
+
      //   mInterstitialAd.show();
-        fab.setOnClickListener(new View.OnClickListener() {
+       fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+               // timerT.schedule();
+                if(1==2){
+                    Toast.makeText(getApplicationContext(), "Reminding after : "+timerMinute.getSelectedItem().toString() + "Minute", Toast.LENGTH_SHORT).show();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
 
-                String root = getFilesDir().toString();
-                //Environment.getRootDirectory().toString();
-                File myDir = new File(root);
-                myDir.mkdirs();
-                String originalImage = "/tempImage.png";
-                File originalWallpaper = new File(myDir, originalImage);
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inPreferredConfig = Bitmap.Config.ARGB_4444;
-                Bitmap bitmap = BitmapFactory.decodeFile(root + originalImage, options);
+                            SharedPreferences.Editor editorw = getSharedPreferences("textSettings", Context.MODE_PRIVATE).edit();
+                            editorw.putInt("AdShown", prefs.getInt("AdShown", 0) + 1);
+                            editorw.commit();
+                            //   updateTemporaryBG();
+                            //   Bitmap bitmap2 = BitmapFactory.decodeFile(root + originalImage, options);
+                            if (retrieveTempBG() == null) {
 
-                if (mInterstitialAd.isLoaded() && prefs.getInt("AdShown", 0) == 3) {
+
+                            } else if (compare(retrieveTempBG(), ((BitmapDrawable) WallpaperManager.getInstance(MainActivity.this).getDrawable()).getBitmap())) {
+
+
+                            } else {
+
+                                resetApp();
+
+                            }
+
+
+
+
+
+                            Save("NoteText1.txt", String.valueOf(EditText1.getText().toString()));
+                            Toast.makeText(getApplicationContext(),"Reminder Set In Wallpaper!", Toast.LENGTH_LONG).show();
+                        }
+                    }, Long.parseLong(timerMinute.getSelectedItem().toString()) * 60000);
+                }
+                else{
+                    SharedPreferences.Editor editorw = getSharedPreferences("textSettings", Context.MODE_PRIVATE).edit();
+                    editorw.putInt("AdShown", prefs.getInt("AdShown", 0) + 1);
+
+                    editorw.commit();
+                    //   updateTemporaryBG();
+                    //   Bitmap bitmap2 = BitmapFactory.decodeFile(root + originalImage, options);
+                    if (retrieveTempBG() == null) {
+
+
+                    } else if (compare(retrieveTempBG(), ((BitmapDrawable) WallpaperManager.getInstance(MainActivity.this).getDrawable()).getBitmap())) {
+
+
+
+                    } else {
+
+                        resetApp();
+
+                    }
+
+
+
+
+
+                    Save("NoteText1.txt", String.valueOf(EditText1.getText().toString()));
+                    Toast.makeText(getApplicationContext(),"Reminder Set In Wallpaper!", Toast.LENGTH_LONG).show();
+
+                }
+
+                if (mInterstitialAd.isLoaded() && prefs.getInt("AdShown", 0) == 2) {
                    /* Activity activityContext = MainActivity.this;
                     RewardedAdCallback adCallback = new RewardedAdCallback() {
                         @Override
@@ -442,48 +426,16 @@ leftOffText.setText(Integer.toString(prefs.getInt("leftOff", 100)));
                             // Ad failed to display
                         }
                     };
-                    rewardedAd.show(activityContext, adCallback);*/
+                    rewardedAd.show(activityContext, adCallback);
                     mInterstitialAd.show();
                     SharedPreferences.Editor editor = getSharedPreferences("textSettings", Context.MODE_PRIVATE).edit();
                     editor.putInt("AdShown", 0);
 
                     mFirebaseAnalytics.logEvent("AdShown", bundle);
-                    editor.commit();
+                    editor.commit();*/
                 }
 
-                SharedPreferences.Editor editorw = getSharedPreferences("textSettings", Context.MODE_PRIVATE).edit();
-                editorw.putInt("AdShown", prefs.getInt("AdShown", 0) + 1);
 
-
-                editorw.commit();
-                //   updateTemporaryBG();
-                //   Bitmap bitmap2 = BitmapFactory.decodeFile(root + originalImage, options);
-                if (retrieveTempBG() == null) {
-
-
-                } else if (compare(retrieveTempBG(), ((BitmapDrawable) WallpaperManager.getInstance(MainActivity.this).getDrawable()).getBitmap())) {
-
-
-                } else {
-
-                    resetApp();
-
-                }
-
-                    if (isCardDisplayed) {
-
-                        SharedPreferences.Editor editor = getSharedPreferences("textSettings", Context.MODE_PRIVATE).edit();
-                        editor.putInt("txtSize", Math.round(txtSize.getProgress()));
-                        editor.putInt("leftOff", (Math.round(leftOffset.getProgress())));
-                        editor.putInt("topOff", (Math.round(topOffset.getProgress())));
-                        editor.putBoolean("hasWallpaperSet", true);
-                        bundle.putString("SetReminder", "Reminder set");
-                        mFirebaseAnalytics.logEvent("MainSettings", bundle);
-                        editor.commit();
-
-                        Save("NoteText1.txt", String.valueOf(EditText1.getText().toString()));
-                        Toast.makeText(getApplicationContext(),"Reminder Set In Wallpaper!", Toast.LENGTH_LONG).show();
-                    }
                 }
 
         });
@@ -542,6 +494,7 @@ leftOffText.setText(Integer.toString(prefs.getInt("leftOff", 100)));
         rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
         return rewardedAd;
     }
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     private void resetToWallpaper() {
 
         String root = getFilesDir().toString();
@@ -552,15 +505,10 @@ leftOffText.setText(Integer.toString(prefs.getInt("leftOff", 100)));
         File originalWallpaper = new File(myDir, originalImage);
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_4444;
-        Bitmap bitmap = BitmapFactory.decodeFile(root + originalImage, options);
-        if(bitmap!=null)
-        try {
-            WallpaperManager.getInstance(MainActivity.this).setBitmap(bitmap);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Exception5: " + e.toString(), Toast.LENGTH_LONG).show();
+        Bitmap   bitmap  = BitmapFactory.decodeFile(root+originalImage,options);
 
-        }
+        // Bitmap bitmap = BitmapFactory.decodeFile(root + originalImage, options);
+
     }
 
 
@@ -779,6 +727,7 @@ updateTemporaryBG();
 
     }
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     public Bitmap retrieveTempBG(){
         String root = getFilesDir().toString();
 
@@ -790,12 +739,15 @@ updateTemporaryBG();
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_4444;
-        Bitmap origPaper1 = BitmapFactory.decodeFile(root+ originalImage, options);
 
-        return  origPaper1;
+        Bitmap   origPaper1  = BitmapFactory.decodeFile(root+originalImage,options);
+
+
+return origPaper1;
     }
 
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     public Bitmap drawTextOverWallpaper(String text, int textWidth, int color) {
 
         int txtCol =Color.parseColor("#f7f1e3");
@@ -898,7 +850,7 @@ updateTemporaryBG();
 
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inPreferredConfig = Bitmap.Config.ARGB_4444;
-            origPaper1 = BitmapFactory.decodeFile(root + originalImage, options);
+               origPaper1  = BitmapFactory.decodeFile(root+originalImage,options);
 
 
         }
