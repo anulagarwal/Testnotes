@@ -6,9 +6,9 @@ android {
         applicationId "theswiftbaker.com.testnotes"
         minSdkVersion 17
         targetSdkVersion 27
-        versionCode 22
+        versionCode 25
 
-        versionName "2.12"
+        versionName "2.15"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

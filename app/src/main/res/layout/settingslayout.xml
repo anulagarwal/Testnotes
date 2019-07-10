@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-  >
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
-<SeekBar
+    <SeekBar
         android:id="@+id/topOffset"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:padding="6dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="72dp"
+        android:padding="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
@@ -25,13 +23,12 @@
         android:id="@+id/leftOffset"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="44dp"
+        android:padding="0dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView11"
-        android:padding="6dp"/>
+        app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
     <SeekBar
         android:id="@+id/txtSize"
@@ -39,7 +36,7 @@
         android:layout_height="19dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="52dp"
         android:padding="6dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView10" />
@@ -48,7 +45,8 @@
         android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="12dp"
         android:padding="6dp"
         android:text="Distance from Top"
         app:layout_constraintStart_toStartOf="parent"
@@ -58,7 +56,8 @@
         android:id="@+id/textView11"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="16dp"
         android:padding="6dp"
         android:text="Distance from Left"
         app:layout_constraintStart_toStartOf="parent"
@@ -68,7 +67,7 @@
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="52dp"
         android:padding="6dp"
         android:text="Size"
         app:layout_constraintStart_toStartOf="parent"
@@ -78,7 +77,6 @@
         android:id="@+id/txtSizeText2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:text="0"
         app:layout_constraintStart_toEndOf="@+id/txtSize"
         app:layout_constraintTop_toBottomOf="@+id/textView10" />
@@ -87,8 +85,6 @@
         android:id="@+id/leftOffText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:text="0"
         app:layout_constraintStart_toEndOf="@+id/leftOffset"
         app:layout_constraintTop_toTopOf="@+id/leftOffset" />
@@ -97,7 +93,6 @@
         android:id="@+id/topOffText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:text="0"
         app:layout_constraintStart_toEndOf="@+id/topOffset"
         app:layout_constraintTop_toTopOf="@+id/topOffset" />
@@ -130,5 +125,64 @@
         android:text="Minute"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner" />
+
+    <Spinner
+        android:id="@+id/spinner3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/fontcolorselector"
+        android:entries="@array/colors_list"
+        android:paddingLeft="10dp"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+    <Spinner
+        android:id="@+id/spinner2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/fontcolorselector"
+        android:entries="@array/colors_list"
+        android:paddingLeft="10dp"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="12dp"
+        ads:layout_constraintStart_toEndOf="@+id/textView9"
+        ads:layout_constraintTop_toBottomOf="@+id/leftOffset"
+        ads:srcCompat="@drawable/uparrow" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="16dp"
+        ads:layout_constraintEnd_toStartOf="@+id/textView11"
+        ads:layout_constraintTop_toBottomOf="@+id/txtSize"
+        ads:srcCompat="@drawable/leftarrow" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="40dp"
+        android:text="Text Color:"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toBottomOf="@+id/topOffset" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="52dp"
+        android:text="Background Color:"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toBottomOf="@+id/spinner2" />
 
 </android.support.constraint.ConstraintLayout>

@@ -20,6 +20,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.Preference;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -101,6 +102,7 @@ boolean isCardDisplayed;
     private InterstitialAd mInterstitialAd;
     private RewardedAd rewardedAd;
      Bundle bundle;
+     Spinner bgcolor, fontcolor;
 Timer timerT;
     public void showAlertDialogButtonClicked() {
         // create an alert builder
@@ -109,7 +111,8 @@ Timer timerT;
         // set the custom layout
         final View customLayout = getLayoutInflater().inflate(R.layout.settingslayout, null);
         builder.setView(customLayout);
-
+        bgcolor = customLayout.findViewById(R.id.spinner3);
+        fontcolor = customLayout.findViewById(R.id.spinner2);
         txtSize = customLayout.findViewById(R.id.txtSize);
         topOffset = customLayout.findViewById(R.id.topOffset);
         leftOffset = customLayout.findViewById(R.id.leftOffset);
@@ -130,6 +133,7 @@ Timer timerT;
                 timerMinute.setEnabled(isChecked);
             }
         });
+
 
         txtSizeText.setText(Integer.toString(prefs.getInt("txtSize", 100)));
         // EditText1.setTextSize((float)prefs.getInt("txtSize", 100));
@@ -156,6 +160,8 @@ Timer timerT;
         leftOffset.setMax(width);
         leftOffset.setProgress(prefs.getInt("leftOff", 100));
         leftOffText.setText(" "+prefs.getInt("leftOff", 100));
+
+        SharedPreferences prefs = getSharedPreferences( "textSettings",Context.MODE_PRIVATE);
 
 
         txtSize.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -229,18 +235,23 @@ Timer timerT;
                 mFirebaseAnalytics.logEvent("MainSettings", bundle);
 
 
+                String txtCol= fontcolor.getSelectedItem().toString();
+                String bgCol = bgcolor.getSelectedItem().toString();
+                //   CharSequence txtSiz = txtSizePref.get();
+                // CharSequence bgCol = bgColor.getSelectedItemPosition();
+                //CharSequence rightOff = rightOffset.getProgress();
+                //CharSequence topOff = topOffset.getProgress();
+                //editor.putInt("textColor", txtCol);
+                //editor.putInt("txtSize", txtSiz);
+
+                //editor.putInt("rightOff",rightOff);
+                editor.putString("bgColor",bgCol);
+                editor.putString("textColor",txtCol);
 
 
 
-                if (mInterstitialAd.isLoaded() && prefs.getInt("AdShown", 0) == 2) {
 
-                    mInterstitialAd.show();
 
-                    editor.putInt("AdShown", 0);
-
-                    mFirebaseAnalytics.logEvent("AdShown", bundle);
-
-                }
                 editor.commit();
             }
         });
