@@ -24,6 +24,8 @@
         android:id="@+id/ListEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/transparent"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Name"
@@ -32,21 +34,13 @@
 
     <ImageButton
         android:id="@+id/TodoDelete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="5dp"
-        android:paddingBottom="0dp"
-        app:layout_constraintStart_toEndOf="@+id/ListEdit"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/delete" />
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/delete"
-        app:layout_constraintStart_toEndOf="@+id/TodoDelete"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/delete" />
+        android:paddingTop="15dp"
+        android:paddingBottom="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
