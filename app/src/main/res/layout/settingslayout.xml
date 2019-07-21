@@ -14,10 +14,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="72dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/progressbar"
         android:padding="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+        ads:layout_constraintTop_toBottomOf="@+id/imageView3"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <SeekBar
         android:id="@+id/leftOffset"
@@ -25,10 +27,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="44dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/progressbar"
         android:padding="0dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView11" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <SeekBar
         android:id="@+id/txtSize"
@@ -36,40 +40,20 @@
         android:layout_height="19dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="52dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/progressbar"
         android:padding="6dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
     <TextView
-        android:id="@+id/textView9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="12dp"
-        android:padding="6dp"
-        android:text="Distance from Top"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/leftOffset" />
-
-    <TextView
-        android:id="@+id/textView11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="16dp"
-        android:padding="6dp"
-        android:text="Distance from Left"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtSize" />
-
-    <TextView
         android:id="@+id/textView10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
+        android:layout_width="150dp"
+        android:layout_height="26dp"
+        android:layout_marginLeft="48dp"
+        android:background="@drawable/size"
         android:padding="6dp"
-        android:text="Size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
@@ -77,6 +61,8 @@
         android:id="@+id/txtSizeText2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
         android:text="0"
         app:layout_constraintStart_toEndOf="@+id/txtSize"
         app:layout_constraintTop_toBottomOf="@+id/textView10" />
@@ -85,6 +71,8 @@
         android:id="@+id/leftOffText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:text="0"
         app:layout_constraintStart_toEndOf="@+id/leftOffset"
         app:layout_constraintTop_toTopOf="@+id/leftOffset" />
@@ -93,6 +81,8 @@
         android:id="@+id/topOffText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
         android:text="0"
         app:layout_constraintStart_toEndOf="@+id/topOffset"
         app:layout_constraintTop_toTopOf="@+id/topOffset" />
@@ -103,7 +93,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
+        android:paddingEnd="5dp"
         android:text="Timer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView" />
@@ -121,57 +111,19 @@
         android:id="@+id/textView12"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="36dp"
+        android:paddingRight="10dp"
         android:text="Minute"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner" />
-
-    <Spinner
-        android:id="@+id/spinner3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/fontcolorselector"
-        android:entries="@array/colors_list"
-        android:paddingLeft="10dp"
-        ads:layout_constraintStart_toStartOf="parent"
-        ads:layout_constraintTop_toBottomOf="@+id/textView6" />
-
-    <Spinner
-        android:id="@+id/spinner2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/fontcolorselector"
-        android:entries="@array/colors_list"
-        android:paddingLeft="10dp"
-        ads:layout_constraintStart_toStartOf="parent"
-        ads:layout_constraintTop_toBottomOf="@+id/textView5" />
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginTop="12dp"
-        ads:layout_constraintStart_toEndOf="@+id/textView9"
-        ads:layout_constraintTop_toBottomOf="@+id/leftOffset"
-        ads:srcCompat="@drawable/uparrow" />
-
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginTop="16dp"
-        ads:layout_constraintEnd_toStartOf="@+id/textView11"
-        ads:layout_constraintTop_toBottomOf="@+id/txtSize"
-        ads:srcCompat="@drawable/leftarrow" />
 
     <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="24dp"
         android:text="Text Color:"
+        android:textSize="20sp"
         ads:layout_constraintStart_toStartOf="parent"
         ads:layout_constraintTop_toBottomOf="@+id/topOffset" />
 
@@ -179,10 +131,174 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="36dp"
         android:text="Background Color:"
+        android:textSize="20sp"
         ads:layout_constraintStart_toStartOf="parent"
-        ads:layout_constraintTop_toBottomOf="@+id/spinner2" />
+        ads:layout_constraintTop_toBottomOf="@+id/fontcolor" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="151dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="36dp"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toBottomOf="@+id/txtSize"
+        ads:srcCompat="@drawable/leftdistance" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="151dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="24dp"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toBottomOf="@+id/leftOffset"
+        ads:srcCompat="@drawable/topdistance"
+        android:layout_marginLeft="48dp" />
+
+    <RadioGroup
+        android:id="@+id/bgcolor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toBottomOf="@+id/textView6">
+
+        <RadioButton
+            android:id="@+id/bgred"
+            style="@android:style/Widget.Holo.CompoundButton.RadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/redselect"
+            android:buttonTint="@android:color/black" />
+
+        <RadioButton
+            android:id="@+id/bgblue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/blueselect"
+            android:buttonTint="@android:color/white" />
+
+        <RadioButton
+            android:id="@+id/bggreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/greenselect"
+            android:buttonTint="@android:color/black" />
+
+        <RadioButton
+            android:id="@+id/bgyellow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/yellowselect"
+            android:buttonTint="@android:color/black" />
+
+        <RadioButton
+            android:id="@+id/bgwhite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/whiteselect"
+            android:buttonTint="@android:color/black" />
+
+        <RadioButton
+            android:id="@+id/bgblack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/blackselect"
+            android:buttonTint="@android:color/white" />
+
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/fontcolor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toBottomOf="@+id/textView5">
+
+        <RadioButton
+            android:id="@+id/textred"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/redselect"
+            android:buttonTint="@android:color/black" />
+
+        <RadioButton
+            android:id="@+id/textblue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/blueselect"
+            android:buttonTint="@android:color/white" />
+
+        <RadioButton
+            android:id="@+id/textgreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/greenselect"
+            android:buttonTint="@android:color/black" />
+
+        <RadioButton
+            android:id="@+id/textyellow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/yellowselect"
+            android:buttonTint="@android:color/black" />
+
+        <RadioButton
+            android:id="@+id/textwhite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+
+            android:background="@drawable/whiteselect"
+            android:buttonTint="@android:color/black" />
+
+        <RadioButton
+            android:id="@+id/textblack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/blackselect"
+            android:buttonTint="@android:color/white" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/sampletext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="12dp"
+        android:padding="5dp"
+        android:text="Sample"
+        android:textSize="24sp"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toBottomOf="@+id/bgcolor" />
 
 </android.support.constraint.ConstraintLayout>
